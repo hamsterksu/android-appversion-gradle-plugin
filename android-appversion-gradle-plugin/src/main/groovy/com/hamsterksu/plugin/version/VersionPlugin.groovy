@@ -1,3 +1,5 @@
+package com.hamsterksu.plugin.version
+
 import groovy.text.SimpleTemplateEngine
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,7 +27,7 @@ class VersionPlugin implements Plugin<Project> {
                         increaseBuildNumberVersion(it.name)
                     }
                 }
-                appendVersionNameVersionCode(it)
+                appendVersionNameVersionCode(project, it)
             }
         }
     }
@@ -46,15 +48,15 @@ class VersionPlugin implements Plugin<Project> {
 
     def increaseBuildNumberVersion(variantName){
         variantName = variantName.capitalize();
-        println "~ increaseBuildNumberVersion"
+        //println "~ increaseBuildNumberVersion"
 
         def versionName = versionsMap.get(variantName)
-        println "~ for ${variantName}: ${versionName}"
+        //println "~ for ${variantName}: ${versionName}"
         def key = "${variantName}_${versionName}"
-        println "~ current buildNumber = ${props.getProperty(key, "0")}"
+        //println "~ current buildNumber = ${props.getProperty(key, "0")}"
 
         def buildNumber = props.getProperty(key, "0").toInteger() + 1;
-        println "~ new buildNumber = ${buildNumber}"
+        //println "~ new buildNumber = ${buildNumber}"
 
         //put new build number to props
         props[key] = buildNumber.toString()
@@ -67,10 +69,10 @@ class VersionPlugin implements Plugin<Project> {
 
     def appendBuildNumber2VersionName(variant) {
         def variantName = variant.name.capitalize();
-        println "~ appendBuildNumber2VersionName for ${variantName}"
+        //println "~ appendBuildNumber2VersionName for ${variantName}"
 
         versionsMap.put(variantName, variant.mergedFlavor.versionName)
-        println "~ put version ${variantName} -> ${variant.mergedFlavor.versionName}"
+        //println "~ put version ${variantName} -> ${variant.mergedFlavor.versionName}"
 
         def key = "${variantName}_${variant.mergedFlavor.versionName}"
         def buildNumber = props.getProperty(key, "0").toInteger()
@@ -84,31 +86,37 @@ class VersionPlugin implements Plugin<Project> {
         //variant.mergedFlavor.versionName = variant.mergedFlavor.versionName + "." + (buildNumber + 1)
     }
 
-    def appendVersionNameVersionCode(variant) {
-        println "~ rename out file for <${variant.name}>"
+    def appendVersionNameVersionCode(Project project, variant) {
+        //println "~ rename out file for <${variant.name}>"
 
         def dateFormat = versionExt.dateFormat == null ? DateFormat.getDateInstance() : new SimpleDateFormat(versionExt.dateFormat)
         def timeFormat = versionExt.timeFormat == null ? DateFormat.getTimeInstance(DateFormat.SHORT) : new SimpleDateFormat(versionExt.timeFormat)
 
         Date date = new Date();
-        def binding = ['versionName':variant.versionName,
-                       'versionCode':variant.versionCode,
-                       'appPkg':variant.getPackageApplication(),
-                       'date':dateFormat.format(date).replaceAll('\\.', '-'),
-                       'time':timeFormat.format(date).replaceAll(':','-').replaceAll(' ', '-')
+        def binding = [
+						'appName':project.name,
+						'flavorName':variant.flavorName,
+						'buildType':variant.buildType.name,
+						'versionName':variant.versionName,
+						'versionCode':variant.versionCode,
+						'appPkg':variant.packageName,
+						'date':dateFormat.format(date).replaceAll('\\.', '-'),
+						'time':timeFormat.format(date).replaceAll(':','-').replaceAll(' ', '-')
         ]
 
-        def template = versionExt.fileNameFormat == null ? '-v_$versionName-c_$versionCode-d_$date-$time' : versionExt.fileNameFormat
-        def fileNamePostfix = templateEngine.createTemplate(template).make(binding).toString() + ".apk";
+        def template = versionExt.fileNameFormat == null ?
+                '$appName-$flavorName-$buildType-v_$versionName-c_$versionCode-d_$date-$time'
+                : versionExt.fileNameFormat
+        def fileName = templateEngine.createTemplate(template).make(binding).toString();
         if (variant.zipAlign) {
             def file = variant.outputFile
-            def fileName = file.name.replace(".apk", fileNamePostfix)
-            variant.outputFile = new File(file.parent, fileName)
+            //def fileName = file.name.replace(".apk", fileNamePostfix)
+            variant.outputFile = new File(file.parent, fileName + ".apk")
         }
 
         def file = variant.packageApplication.outputFile
-        def fileName = file.name.replace(".apk", fileNamePostfix)
-        variant.packageApplication.outputFile = new File(file.parent, fileName)
+        //def fileName = file.name.replace(".apk", fileNamePostfix)
+        variant.packageApplication.outputFile = new File(file.parent, fileName + "-unaligned.apk")
     }
 
 }

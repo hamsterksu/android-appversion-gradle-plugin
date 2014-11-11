@@ -1,3 +1,5 @@
+package com.hamsterksu.plugin.version
+
 class VersionPluginExtension{
     /**
      * append build number to the app version.
@@ -15,13 +17,16 @@ class VersionPluginExtension{
      * Groovy template engine string
      *
      * Available vars:
-     * 1. versionName
-     * 2. versionCode
-     * 3. appPkg
-     * 4. date
-     * 5. time
+     * 1. appName
+     * 2. flavorName
+     * 3. buildType
+     * 4. versionName
+     * 5. versionCode
+     * 6. appPkg
+     * 7. date
+     * 8. time
      *
-     * Default value: -v_$versionName-c_$versionCode-d_$date-$time
+     * Default value: $appName-$flavorName-$buildType-v_$versionName-c_$versionCode-d_$date-$time
      */
     String fileNameFormat
 
