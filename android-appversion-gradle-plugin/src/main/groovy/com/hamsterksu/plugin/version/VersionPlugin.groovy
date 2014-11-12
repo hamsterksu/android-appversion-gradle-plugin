@@ -9,14 +9,16 @@ import java.text.SimpleDateFormat
 
 class VersionPlugin implements Plugin<Project> {
 
-    def versionsMap = [:]
     def props = loadProps()
     def templateEngine = new SimpleTemplateEngine()
     VersionPluginExtension versionExt;
 
+    def processedFlavors;
+
     void apply(Project project) {
         versionExt = project.extensions.create("versionPlugin", VersionPluginExtension)
         project.afterEvaluate {
+            processedFlavors = [:]
             project.android.applicationVariants.matching({ it.buildType.name.matches(versionExt.buildTypesMatcher)}).all {
                 if (versionExt.supportBuildNumber) {
                     appendBuildNumber2VersionName(it)
@@ -24,7 +26,7 @@ class VersionPlugin implements Plugin<Project> {
                         if (task.state.failure) {
                             return;
                         }
-                        increaseBuildNumberVersion(it.name)
+                        increaseBuildNumberVersion(it.flavorName, processedFlavors[it.flavorName])
                     }
                 }
                 appendVersionNameVersionCode(project, it)
@@ -46,21 +48,12 @@ class VersionPlugin implements Plugin<Project> {
         return props
     }
 
-    def increaseBuildNumberVersion(variantName){
-        variantName = variantName.capitalize();
-        //println "~ increaseBuildNumberVersion"
-
-        def versionName = versionsMap.get(variantName)
-        //println "~ for ${variantName}: ${versionName}"
-        def key = "${variantName}_${versionName}"
-        //println "~ current buildNumber = ${props.getProperty(key, "0")}"
-
+    def increaseBuildNumberVersion(flavorName, versionName){
+        def key = "${flavorName}_${versionName}"
         def buildNumber = props.getProperty(key, "0").toInteger() + 1;
-        //println "~ new buildNumber = ${buildNumber}"
 
         //put new build number to props
         props[key] = buildNumber.toString()
-
         //store property file
         new File("versions.properties").withWriter { writer ->
             props.store(writer, null)
@@ -68,22 +61,18 @@ class VersionPlugin implements Plugin<Project> {
     }
 
     def appendBuildNumber2VersionName(variant) {
-        def variantName = variant.name.capitalize();
-        //println "~ appendBuildNumber2VersionName for ${variantName}"
+        def flavorName = variant.flavorName;
 
-        versionsMap.put(variantName, variant.mergedFlavor.versionName)
-        //println "~ put version ${variantName} -> ${variant.mergedFlavor.versionName}"
-
-        def key = "${variantName}_${variant.mergedFlavor.versionName}"
+        def key = "${flavorName}_${variant.mergedFlavor.versionName}"
         def buildNumber = props.getProperty(key, "0").toInteger()
         def buildNumberText = versionExt.buildNumberPrefix == null ? (buildNumber + 1).toString() : versionExt.buildNumberPrefix + (buildNumber + 1);
 
-        if(variant.buildType.versionNameSuffix != null) {
-            variant.buildType.versionNameSuffix = "." + buildNumberText + variant.buildType.versionNameSuffix;
-        }else{
-            variant.buildType.versionNameSuffix = "." + buildNumberText;
+        if(!processedFlavors.containsKey(flavorName)){
+            processedFlavors.put(flavorName, variant.mergedFlavor.versionName);
+            variant.mergedFlavor.versionName += "." + buildNumberText;
+
+            println "~ new flavor.version ${flavorName} = ${variant.versionName}"
         }
-        //variant.mergedFlavor.versionName = variant.mergedFlavor.versionName + "." + (buildNumber + 1)
     }
 
     def appendVersionNameVersionCode(Project project, variant) {
