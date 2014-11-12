@@ -1,9 +1,8 @@
 android-appversion-gradle-plugin
 ================================
 
-Easy way to change APK name. 
-
-You can add extra data to the file name. Also you can add build number to the application version
+Easy way to add build number to your application version.
+Also you can add extra data to the file name. 
 
 ####Add plugin to dependencies####
 
