@@ -39,4 +39,6 @@ class VersionPluginExtension{
      * format string for SimpleDateFormat
      */
     String timeFormat;
+
+    def customNameMapping = [:];
 }

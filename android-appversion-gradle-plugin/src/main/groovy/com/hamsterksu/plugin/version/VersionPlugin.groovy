@@ -76,7 +76,6 @@ class VersionPlugin implements Plugin<Project> {
     }
 
     def appendVersionNameVersionCode(Project project, variant) {
-        //println "~ rename out file for <${variant.name}>"
 
         def dateFormat = versionExt.dateFormat == null ? DateFormat.getDateInstance() : new SimpleDateFormat(versionExt.dateFormat)
         def timeFormat = versionExt.timeFormat == null ? DateFormat.getTimeInstance(DateFormat.SHORT) : new SimpleDateFormat(versionExt.timeFormat)
@@ -84,13 +83,15 @@ class VersionPlugin implements Plugin<Project> {
         Date date = new Date();
         def binding = [
 						'appName':project.name,
+                        'projectName':project.rootProject.name,
 						'flavorName':variant.flavorName,
 						'buildType':variant.buildType.name,
 						'versionName':variant.versionName,
 						'versionCode':variant.versionCode,
 						'appPkg':variant.packageName,
 						'date':dateFormat.format(date).replaceAll('\\.', '-'),
-						'time':timeFormat.format(date).replaceAll(':','-').replaceAll(' ', '-')
+						'time':timeFormat.format(date).replaceAll(':','-').replaceAll(' ', '-'),
+                        'customName':versionExt.customNameMapping.get(variant.name, '')
         ]
 
         def template = versionExt.fileNameFormat == null ?
