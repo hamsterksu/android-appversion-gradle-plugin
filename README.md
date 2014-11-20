@@ -17,7 +17,8 @@ android-appversion-gradle-plugin
   4. [Available options](#Available options)
 2. [Typical usecases](#results)
 3. [Use brackets in some cases](#brackets)
-4. [Configuration examples](#Config examples)
+4. [What is *versions.properties* file?](#What is `versions.properties` file?)
+5. [Configuration examples](#Config examples)
 
 ##Typical usecases
 
@@ -73,7 +74,7 @@ versionPlugin{
 ##Available options:##
 
 * **buildTypesMatcher** - `regexp` value. the most useful case: if you want to apply changes for one build type use `buildTypesMatcher = 'release'` if for both `buildTypesMatcher = 'release|debug'`. Sure you can use any regexp value.
-* **supportBuildNumber** - use `true` if you want to add `build number` to `appVersion`. `versions.properties file` will be generated in root project. you can add it to svn ignore if you use CI or you are alone devloper in the team.
+* **supportBuildNumber** - use `true` if you want to add `build number` to `appVersion`. `versions.properties file` will be generated in root project. you can add it to version control ignore list if you use CI or you are alone devloper in the team.
 * **buildNumberPrefix** - `string` value, prefix before build number. example: `1.0.0.b1`
 * **fileNameFormat** - `groovy template string`. you can specify your own format of APK file name. Available variables in the formatted string:
   * *appName* - name of main module
@@ -103,6 +104,9 @@ customNameMapping = [
     'flavourRelease':'MySuperApp'
 ]
 ```
+##What is `versions.properties` file?
+If you turn on `supportBuildNumber` plugin will generate `versions.properties` file in root project. it store current build number for each flavour. You can add it to version control ignore list if you use CI or you are alone devloper in the team.
+ 
 ##Config examples
 ```groovy 
 versionPlugin{
