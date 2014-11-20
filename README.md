@@ -18,7 +18,7 @@ android-appversion-gradle-plugin
 2. [Typical usecases](#results)
 3. [Use brackets in some cases](#brackets)
 
-###Typical usecases
+##Typical usecases
 
 *Do you want to use package name, app version name and version code in file name?*
 
@@ -26,7 +26,7 @@ Just use the following `fileNameFormat`: `$appPkg.$versionName($versionCode)`
 
 **Result** - `com.yourdomain.app.1.0.0.1(1).apk`
 
-###Use brackets in some cases
+##Use brackets in some cases
 
 *Why do you need to use brackets `{}` in some cases?*
 
