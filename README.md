@@ -5,11 +5,11 @@ android-appversion-gradle-plugin
 1. Easy way to add build number to your application version
 2. Easy way to change APK name and add extra data to it.
 
-##Supported version of gradle-android-plugin##
+## Supported version of gradle-android-plugin
 - `0.12.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.0.2-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.0.2%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.0.+`
 - `0.14.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.1.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.1.0%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.1.+`
 
-##Сontents##
+## Сontents
 1. [How to use](#How to use)
   1. [Add plugin to dependencies](#Add plugin to dependencies)
   2. [Apply plugin](#Apply plugin)
@@ -20,7 +20,7 @@ android-appversion-gradle-plugin
 4. [What is *versions.properties* file?](#What is versions.properties file?)
 5. [Configuration examples](#Config examples)
 
-##Typical usecases
+## Typical usecases
 
 *Do you want to use package name, app version name and version code in file name?*
 
@@ -28,7 +28,7 @@ Just use the following `fileNameFormat`: `$appPkg.$versionName($versionCode)`
 
 **Result** - `com.yourdomain.app.1.0.0.1(1).apk`
 
-##Use brackets in some cases
+## Use brackets in some cases
 
 *Why do you need to use brackets `{}` in some cases?*
 
@@ -36,9 +36,9 @@ Just use the following `fileNameFormat`: `$appPkg.$versionName($versionCode)`
 
 In this case you need to use `{}`: `${appPkg}.v_$versionName`
 
-##How to use##
+## How to use
 
-####Add plugin to dependencies####
+#### Add plugin to dependencies
 
 ```groovy
 buildscript {
@@ -52,13 +52,13 @@ buildscript {
 }
 ```
 
-####Apply plugin####
+#### Apply plugin
 
 ```groovy
 apply plugin: 'versionPlugin'
 ```
 	
-####Configure plugin####
+#### Configure plugin
 
 ```groovy
 versionPlugin{
@@ -71,7 +71,7 @@ versionPlugin{
 }
 ```
 	
-##Available options:##
+## Available options:##
 
 * **buildTypesMatcher** - `regexp` value. the most useful case: if you want to apply changes for one build type use `buildTypesMatcher = 'release'` if for both `buildTypesMatcher = 'release|debug'`. Sure you can use any regexp value.
 * **supportBuildNumber** - use `true` if you want to add `build number` to `appVersion`. `versions.properties file` will be generated in root project. you can add it to version control ignore list if you use CI or you are alone devloper in the team.
@@ -104,10 +104,10 @@ customNameMapping = [
     'flavourRelease':'MySuperApp'
 ]
 ```
-##What is `versions.properties` file?
+## What is versions.properties file?
 If you turn on `supportBuildNumber` plugin will generate `versions.properties` file in root project. it store current build number for each flavour. You can add it to version control ignore list if you use CI or you are alone devloper in the team.
  
-##Config examples
+## Config examples
 ```groovy 
 versionPlugin{
     buildTypesMatcher = 'release|debug'
