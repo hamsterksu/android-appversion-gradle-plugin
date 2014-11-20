@@ -13,12 +13,18 @@ class VersionPlugin implements Plugin<Project> {
     def templateEngine = new SimpleTemplateEngine()
     VersionPluginExtension versionExt;
 
-    def processedFlavors;
+    def originalFlavorVersion;
 
     void apply(Project project) {
+        def androidGradlePlugin = getAndroidPluginVersion(project)
+
+        if (androidGradlePlugin != null && !checkAndroidVersion(androidGradlePlugin.version)) {
+            throw new IllegalStateException("The Android Gradle plugin ${androidGradlePlugin.version} is not supported.")
+        }
+
         versionExt = project.extensions.create("versionPlugin", VersionPluginExtension)
         project.afterEvaluate {
-            processedFlavors = [:]
+            originalFlavorVersion = [:]
             project.android.applicationVariants.matching({ it.buildType.name.matches(versionExt.buildTypesMatcher)}).all {
                 if (versionExt.supportBuildNumber) {
                     appendBuildNumber2VersionName(it)
@@ -26,7 +32,10 @@ class VersionPlugin implements Plugin<Project> {
                         if (task.state.failure) {
                             return;
                         }
-                        increaseBuildNumberVersion(it.flavorName, processedFlavors[it.flavorName])
+                        if(originalFlavorVersion.containsKey(it.flavorName)){
+                            increaseBuildNumberVersion(it.flavorName, originalFlavorVersion[it.flavorName])
+                            originalFlavorVersion.remove(it.flavorName)
+                        }
                     }
                 }
                 appendVersionNameVersionCode(project, it)
@@ -62,17 +71,15 @@ class VersionPlugin implements Plugin<Project> {
 
     def appendBuildNumber2VersionName(variant) {
         def flavorName = variant.flavorName;
+        if(!originalFlavorVersion.containsKey(flavorName)){
+            originalFlavorVersion.put(flavorName, variant.mergedFlavor.versionName);    
+        }
 
         def key = "${flavorName}_${variant.mergedFlavor.versionName}"
         def buildNumber = props.getProperty(key, "0").toInteger()
         def buildNumberText = versionExt.buildNumberPrefix == null ? (buildNumber + 1).toString() : versionExt.buildNumberPrefix + (buildNumber + 1);
-
-        if(!processedFlavors.containsKey(flavorName)){
-            processedFlavors.put(flavorName, variant.mergedFlavor.versionName);
-            variant.mergedFlavor.versionName += "." + buildNumberText;
-
-            println "~ new flavor.version ${flavorName} = ${variant.versionName}"
-        }
+        
+        variant.mergedFlavor.versionName = originalFlavorVersion[flavorName] + "." + buildNumberText;
     }
 
     def appendVersionNameVersionCode(Project project, variant) {
@@ -88,7 +95,7 @@ class VersionPlugin implements Plugin<Project> {
 						'buildType':variant.buildType.name,
 						'versionName':variant.versionName,
 						'versionCode':variant.versionCode,
-						'appPkg':variant.packageName,
+						'appPkg':variant.applicationId,
 						'date':dateFormat.format(date).replaceAll('\\.', '-'),
 						'time':timeFormat.format(date).replaceAll(':','-').replaceAll(' ', '-'),
                         'customName':versionExt.customNameMapping.get(variant.name, '')
@@ -98,15 +105,36 @@ class VersionPlugin implements Plugin<Project> {
                 '$appName-$flavorName-$buildType-v_$versionName-c_$versionCode-d_$date-$time'
                 : versionExt.fileNameFormat
         def fileName = templateEngine.createTemplate(template).make(binding).toString();
-        if (variant.zipAlign) {
-            def file = variant.outputFile
+        if (variant.buildType.zipAlignEnabled) {
+            def file = variant.outputs[0].outputFile
             //def fileName = file.name.replace(".apk", fileNamePostfix)
-            variant.outputFile = new File(file.parent, fileName + ".apk")
+            variant.outputs[0].outputFile = new File(file.parent, fileName + ".apk")
         }
 
-        def file = variant.packageApplication.outputFile
+        def file = variant.outputs[0].packageApplication.outputFile
         //def fileName = file.name.replace(".apk", fileNamePostfix)
-        variant.packageApplication.outputFile = new File(file.parent, fileName + "-unaligned.apk")
+        variant.outputs[0].packageApplication.outputFile = new File(file.parent, fileName + "-unaligned.apk")
     }
 
+    private static final String[] SUPPORTED_ANDROID_VERSIONS = ['0.14.'];
+
+    def static boolean checkAndroidVersion(String version) {
+        for (String supportedVersion : SUPPORTED_ANDROID_VERSIONS) {
+            if (version.startsWith(supportedVersion)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    def getAndroidPluginVersion(project){
+        return findClassPathDependencyVersion(project, 'com.android.tools.build', 'gradle')
+    }
+
+    def static findClassPathDependencyVersion(project, group, attributeId){
+        return project.buildscript.configurations.classpath.dependencies.find {
+            it.group != null && it.group.equals(group) && it.name.equals('gradle')
+        }
+    }
 }
