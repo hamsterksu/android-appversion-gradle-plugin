@@ -10,13 +10,14 @@ android-appversion-gradle-plugin
 - `0.14.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.1.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.1.0%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.1.+`
 
 ##Сontents##
-1. [How to add to project](#How to use)
+1. [How to use](#How to use)
   1. [Add plugin to dependencies](#Add plugin to dependencies)
   2. [Apply plugin](#Apply plugin)
   3. [Configure plugin](#Configure plugin)
   4. [Available options](#Available options)
 2. [Typical usecases](#results)
 3. [Use brackets in some cases](#brackets)
+4. [Configuration examples](#Config examples)
 
 ##Typical usecases
 
@@ -101,4 +102,38 @@ customNameMapping = [
     'flavourDebug':'MySuperApp',
     'flavourRelease':'MySuperApp'
 ]
+```
+##Config examples
+```groovy 
+versionPlugin{
+    buildTypesMatcher = 'release|debug'
+
+    supportBuildNumber = true
+    buildNumberPrefix = 'b'
+
+    fileNameFormat = '$customName-$versionName($versionCode)-$buildType'
+
+    customNameMapping = [
+    	'debug':'mysuperapp',
+        'release':'mysuperapp'
+    ]
+}
+```
+```groovy 
+versionPlugin{
+    buildTypesMatcher = 'release'
+    supportBuildNumber = true
+    
+    fileNameFormat = '$appPkg-$versionName($versionCode)'
+}
+```
+```groovy 
+versionPlugin{
+    buildTypesMatcher = 'release'
+    supportBuildNumber = false
+    
+    fileNameFormat = '$projectName-$flavorName-$versionName($versionCode)-$date-$time'
+    dateFormat = 'dd-MM-yyyy'
+    timeFormat = 'HH:mm'
+}
 ```
