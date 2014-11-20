@@ -10,15 +10,15 @@ android-appversion-gradle-plugin
 - `0.14.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.1.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.1.0%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.1.+`
 
 ## Сontents
-1. [How to use](#How to use)
-  1. [Add plugin to dependencies](#Add plugin to dependencies)
-  2. [Apply plugin](#Apply plugin)
-  3. [Configure plugin](#Configure plugin)
-  4. [Available options](#Available options)
-2. [Typical usecases](#results)
-3. [Use brackets in some cases](#brackets)
-4. [What is *versions.properties* file?](#What is versions.properties file?)
-5. [Configuration examples](#Config examples)
+1. [How to use](#how-to-use)
+  1. [Add plugin to dependencies](#add-plugin-to-dependencies)
+  2. [Apply plugin](#apply-plugin)
+  3. [Configure plugin](#configure-plugin)
+  4. [Available options](#available-options)
+2. [Typical usecases](#typical-usecases)
+3. [Use brackets in some cases](#use-brackets-in-some-cases)
+4. [What is *versions.properties* file?](#what-is-versionsproperties-file?)
+5. [Configuration examples](#config-examples)
 
 ## Typical usecases
 
