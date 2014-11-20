@@ -17,7 +17,7 @@ android-appversion-gradle-plugin
   4. [Available options](#Available options)
 2. [Typical usecases](#results)
 3. [Use brackets in some cases](#brackets)
-4. [What is *versions.properties* file?](#What is `versions.properties` file?)
+4. [What is *versions.properties* file?](#What is versions.properties file?)
 5. [Configuration examples](#Config examples)
 
 ##Typical usecases
