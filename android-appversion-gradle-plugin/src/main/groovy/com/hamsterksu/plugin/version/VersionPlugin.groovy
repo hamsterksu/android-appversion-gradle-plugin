@@ -116,7 +116,7 @@ class VersionPlugin implements Plugin<Project> {
         variant.outputs[0].packageApplication.outputFile = new File(file.parent, fileName + "-unaligned.apk")
     }
 
-    private static final String[] SUPPORTED_ANDROID_VERSIONS = ['0.14.'];
+    private static final String[] SUPPORTED_ANDROID_VERSIONS = ['0.14.', '1.'];
 
     def static boolean checkAndroidVersion(String version) {
         for (String supportedVersion : SUPPORTED_ANDROID_VERSIONS) {

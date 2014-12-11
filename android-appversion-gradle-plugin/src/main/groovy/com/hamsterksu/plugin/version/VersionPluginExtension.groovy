@@ -25,7 +25,9 @@ class VersionPluginExtension{
      * 6. appPkg
      * 7. date
      * 8. time
-     *
+	 * 9. projectName
+     * 10. customName
+	 *
      * Default value: $appName-$flavorName-$buildType-v_$versionName-c_$versionCode-d_$date-$time
      */
     String fileNameFormat
