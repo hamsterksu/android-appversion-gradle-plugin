@@ -9,7 +9,7 @@ android-appversion-gradle-plugin
 - `0.12.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.0.2-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.0.2%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.0.+`
 - ` > 0.14.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.2.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.2.0%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.2.+`
 - `1.0.+` -> [![Maven Central](http://img.shields.io/badge/maven-v.1.2.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.hamsterksu%7Candroid-appversion-gradle-plugin%7C1.2.0%7Cjar) - `com.github.hamsterksu:android-appversion-gradle-plugin:1.2.+`
-- 
+ 
 ## Сontents
 1. [How to use](#how-to-use)
   1. [Add plugin to dependencies](#add-plugin-to-dependencies)
